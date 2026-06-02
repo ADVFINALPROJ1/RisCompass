@@ -16,6 +16,7 @@ RisCompass is a student-built full-stack risk assessment application for school 
 - Frontend: React, Vite, Tailwind CSS
 - External APIs: World Bank API, Gemini API
 - Charts: Recharts
+- API Test: Postman
 
 ## Getting Started
 
@@ -23,13 +24,13 @@ RisCompass is a student-built full-stack risk assessment application for school 
 
 - Python 3.11+ (or compatible)
 - PostgreSQL
-- Node.js 18+ and npm or yarn
+- Node.js 24.16.0 The LTS Version(Stable) and npm 11.13.0
 
 ### Local Development
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/<your-org>/RisCompass.git
+   git clone https://github.com/ADVFINALPROJ1/RisCompass.git
    cd RisCompass
    ```
 2. Set up the backend environment:
@@ -55,7 +56,7 @@ RisCompass/
 
 ## Contribution
 
-This repository is designed for student collaboration. Use the pull request template in `.github/PULL_REQUEST_TEMPLATE.md` and keep commit messages clear.
+Pull request template in `.github/PULL_REQUEST_TEMPLATE.md` and keep commit messages clear.
 
 ## Notes
 
