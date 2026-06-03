@@ -107,14 +107,18 @@ Then add `app_name` to the `INSTALLED_APPS` list in `settings.py`.
 
 Base URL: `http://localhost:8000/api/`
 
-### Authentication
-- `POST /token/` — Obtain JWT access and refresh tokens
-- `POST /token/refresh/` — Refresh an expired access token
+### Authentication (Accounts App)
+- `POST /auth/register/` — Register a new user
+- `POST /auth/login/` — Login and obtain JWT tokens
+- `POST /auth/token/refresh/` — Refresh an expired access token
+- `GET /auth/me/` — Get current user information (requires authentication)
+
+For detailed authentication API documentation, see [apps/accounts/README.md](apps/accounts/README.md).
 
 ### Available Endpoints (to be implemented)
-- `/risks/` — Risk assessment endpoints
-- `/reports/` — Reports endpoints
-- `/users/` — User management endpoints
+- `/v1/risks/` — Risk assessment endpoints
+- `/v1/reports/` — Reports endpoints
+- `/v1/users/` — User management endpoints
 
 ## Admin Panel
 
@@ -122,17 +126,36 @@ Access the Django admin panel at `http://localhost:8000/admin/` using your super
 
 ## Testing the API
 
-Use Postman or cURL to test endpoints. Example:
+### Register and Login
 
 ```bash
-# Get tokens
-curl -X POST http://localhost:8000/api/token/ \
+# Register a new user
+curl -X POST http://localhost:8000/api/auth/register/ \
   -H "Content-Type: application/json" \
-  -d '{"username": "your_username", "password": "your_password"}'
+  -d '{
+    "email": "user@example.com",
+    "password": "SecurePass123",
+    "password_confirm": "SecurePass123",
+    "first_name": "John",
+    "last_name": "Doe"
+  }'
 
-# Use the access token to make authenticated requests
-curl -X GET http://localhost:8000/api/risks/ \
+# Login with credentials
+curl -X POST http://localhost:8000/api/auth/login/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "password": "SecurePass123"
+  }'
+
+# Get current user (requires valid access token)
+curl -X GET http://localhost:8000/api/auth/me/ \
   -H "Authorization: Bearer <access_token>"
+
+# Refresh access token
+curl -X POST http://localhost:8000/api/auth/token/refresh/ \
+  -H "Content-Type: application/json" \
+  -d '{"refresh": "<refresh_token>"}'
 ```
 
 ## Debugging
