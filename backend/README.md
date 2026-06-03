@@ -93,13 +93,6 @@ backend/
 └── README.md            # This file
 ```
 
-
-WE ARE DONE TILL THIS POINT PLEASE 
-NOTE: GO TO THE DIFFERENT VERSIONS OF README.MD FILE TO FOLLOW INSTRUCTION.
-
-
-
-
 ## Creating Django Apps
 
 To create new apps within the backend:
