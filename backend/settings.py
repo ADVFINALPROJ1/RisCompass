@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'corsheaders',
     
     # Local apps
+    'apps.accounts',
     # 'apps.users',
     # 'apps.risks',
     # 'apps.reports',
@@ -151,3 +152,6 @@ GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
 
 # Environment
 ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
+
+# Custom User Model
+AUTH_USER_MODEL = 'accounts.CustomUser'
