@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import api from '../utils/api'
 import LoadingSpinner from '../components/LoadingSpinner'
 
 export default function Register() {
@@ -15,7 +14,7 @@ export default function Register() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
-  const { login } = useAuth()
+  const { register } = useAuth()
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -34,21 +33,17 @@ export default function Register() {
     setLoading(true)
 
     try {
-      const response = await api.post('/auth/register/', {
+      await register({
         email: formData.email,
         password: formData.password,
         first_name: formData.first_name,
         last_name: formData.last_name,
       })
-
-      const { user, access, refresh } = response.data
-      login(user, access, refresh)
       navigate('/dashboard')
     } catch (err) {
+      const apiError = err.response?.data
       setError(
-        err.response?.data?.detail ||
-          Object.values(err.response?.data || {})[0]?.[0] ||
-          'Failed to register. Please try again.'
+        apiError?.detail || apiError?.message || Object.values(apiError || {})[0]?.[0] || 'Failed to register. Please try again.',
       )
     } finally {
       setLoading(false)
@@ -71,9 +66,7 @@ export default function Register() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                First Name
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
               <input
                 type="text"
                 name="first_name"
@@ -81,12 +74,11 @@ export default function Register() {
                 onChange={handleChange}
                 className="input-field"
                 placeholder="John"
+                required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Last Name
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
               <input
                 type="text"
                 name="last_name"
@@ -94,14 +86,13 @@ export default function Register() {
                 onChange={handleChange}
                 className="input-field"
                 placeholder="Doe"
+                required
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input
               type="email"
               name="email"
@@ -114,9 +105,7 @@ export default function Register() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <input
               type="password"
               name="password"
@@ -129,9 +118,7 @@ export default function Register() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Confirm Password
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
             <input
               type="password"
               name="password_confirm"
