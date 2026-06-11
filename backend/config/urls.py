@@ -14,7 +14,9 @@ urlpatterns = [
     
     # Authentication endpoints
     path('api/auth/', include('apps.accounts.urls')),
-    
+    # Regions and Industries read-only APIs
+    path('api/v1/regions/', include('apps.regions.urls')),
+    path('api/v1/industries/', include('apps.industries.urls')),
     # API v1 routes
     # path('api/v1/risks/', include('apps.risks.urls')),
     # path('api/v1/reports/', include('apps.reports.urls')),
