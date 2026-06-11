@@ -36,6 +36,7 @@ export default function Register() {
       await register({
         email: formData.email,
         password: formData.password,
+        password_confirm: formData.password_confirm,
         first_name: formData.first_name,
         last_name: formData.last_name,
       })
