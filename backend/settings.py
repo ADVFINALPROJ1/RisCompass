@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     
     # Local apps
     'apps.accounts',
+    'apps.regions',
+    'apps.industries',
     # 'apps.users',
     # 'apps.risks',
     # 'apps.reports',
