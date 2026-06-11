@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import api from '../utils/api'
+import authApi from '../api/authApi'
 import LoadingSpinner from '../components/LoadingSpinner'
 
 export default function Login() {
@@ -18,13 +18,15 @@ export default function Login() {
     setLoading(true)
 
     try {
-      const response = await api.post('/auth/login/', { email, password })
+      const response = await authApi.login({ email, password })
       const { user, access, refresh } = response.data
-      
+
       login(user, access, refresh)
       navigate('/dashboard')
     } catch (err) {
-      setError(err.response?.data?.detail || 'Failed to login. Please check your credentials.')
+      setError(
+        err.response?.data?.detail || err.response?.data?.message || 'Failed to login. Please check your credentials.',
+      )
     } finally {
       setLoading(false)
     }
@@ -45,9 +47,7 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input
               type="email"
               value={email}
@@ -59,9 +59,7 @@ export default function Login() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <input
               type="password"
               value={password}
