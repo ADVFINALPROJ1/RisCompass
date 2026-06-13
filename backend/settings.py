@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'apps.accounts',
     'apps.regions',
     'apps.industries',
+    'apps.snapshots',
     # 'apps.users',
     # 'apps.risks',
     # 'apps.reports',
