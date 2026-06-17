@@ -77,26 +77,52 @@ class RegisterSerializer(serializers.ModelSerializer):
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     """
     Custom JWT token serializer that includes user data on login.
+    Accepts email/password instead of username/password.
     """
+    email = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Remove username field if it exists from parent
+        if 'username' in self.fields:
+            del self.fields['username']
+
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        # Customize token claims if needed
         return token
 
     def validate(self, attrs):
-        """Override to use email instead of username."""
+        """Override to authenticate using email instead of username."""
         email = attrs.get('email')
         password = attrs.get('password')
 
-        if email and password:
-            try:
-                user = User.objects.get(email=email)
-                attrs['username'] = user.username
-            except User.DoesNotExist:
-                pass
+        if not email or not password:
+            raise serializers.ValidationError(
+                {'detail': 'Email and password are required.'}
+            )
 
-        data = super().validate(attrs)
-        user = User.objects.get(username=attrs['username'])
-        data['user'] = UserSerializer(user).data
+        # Try to find user by email
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise serializers.ValidationError(
+                {'detail': 'Invalid email or password.'}
+            )
+
+        # Verify password
+        if not user.check_password(password):
+            raise serializers.ValidationError(
+                {'detail': 'Invalid email or password.'}
+            )
+
+        # Generate tokens directly for this user
+        refresh = self.get_token(user)
+        
+        data = {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+            'user': UserSerializer(user).data
+        }
         return data
