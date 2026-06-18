@@ -15,7 +15,10 @@ export default function Dashboard() {
     const fetchSnapshots = async () => {
       try {
         const response = await snapshotsApi.getSnapshots()
-        setSnapshots(response.data)
+        const snapshotsData = Array.isArray(response.data) 
+          ? response.data 
+          : response.data.results || []
+        setSnapshots(snapshotsData)
       } catch (err) {
         setError('Unable to load your snapshots. Please try again.')
       } finally {
