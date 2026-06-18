@@ -46,8 +46,14 @@ export default function CreateSnapshot() {
           regionsApi.getRegions(),
           industriesApi.getIndustries(),
         ])
-        setRegions(regionsResponse.data)
-        setIndustries(industriesResponse.data)
+        const regionsData = Array.isArray(regionsResponse.data) 
+          ? regionsResponse.data 
+          : regionsResponse.data.results || []
+        const industriesData = Array.isArray(industriesResponse.data) 
+          ? industriesResponse.data 
+          : industriesResponse.data.results || []
+        setRegions(regionsData)
+        setIndustries(industriesData)
       } catch (err) {
         setError('Unable to load industries and regions. Please refresh.')
       } finally {

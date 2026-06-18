@@ -55,14 +55,18 @@ export function AuthProvider({ children }) {
         setIsAuthenticated(true)
       } catch (error) {
         console.error('Failed to load user session:', error)
-        logout()
+        localStorage.removeItem('access_token')
+        localStorage.removeItem('refresh_token')
+        localStorage.removeItem('user')
+        setUser(null)
+        setIsAuthenticated(false)
       } finally {
         setLoading(false)
       }
     }
 
     initializeAuth()
-  }, [logout])
+  }, [])
 
   return (
     <AuthContext.Provider
