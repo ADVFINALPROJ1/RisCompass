@@ -10,7 +10,7 @@ from .serializers import (
     RegionEconomicDataCreateSerializer
 )
 from .services.world_bank import fetch_world_bank_indicator
-from .normalizers import (
+from .services.normalizers import (
     normalize_inflation_to_risk,
     normalize_unemployment_to_risk,
     normalize_internet_usage_to_risk,
