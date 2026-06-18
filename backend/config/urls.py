@@ -17,6 +17,8 @@ urlpatterns = [
     # Regions and Industries read-only APIs
     path('api/v1/regions/', include('apps.regions.urls')),
     path('api/v1/industries/', include('apps.industries.urls')),
+    # External data (World Bank API integration)
+    path('api/v1/external-data/', include('apps.external_data.urls')),
     # Business snapshots endpoints
     path('api/snapshots/', include('apps.snapshots.urls')),
     # API v1 routes

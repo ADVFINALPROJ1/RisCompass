@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'apps.regions',
     'apps.industries',
     'apps.snapshots',
+    'apps.external_data',
     # 'apps.users',
     # 'apps.risks',
     # 'apps.reports',
