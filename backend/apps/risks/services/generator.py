@@ -5,7 +5,7 @@ import logging
 from typing import Dict
 from apps.snapshots.models import BusinessSnapshot
 from apps.industries.models import IndustryRiskWeight
-from .models import RiskReport, RiskFactor
+from ..models import RiskReport, RiskFactor
 from .calculator import RiskCalculator
 from .mappings import get_confidence_label, RISK_CATEGORIES
 
