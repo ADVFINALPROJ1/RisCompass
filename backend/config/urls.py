@@ -21,6 +21,8 @@ urlpatterns = [
     path('api/v1/external-data/', include('apps.external_data.urls')),
     # Business snapshots endpoints
     path('api/snapshots/', include('apps.snapshots.urls')),
+    # Risk reports endpoints
+    path('api/', include('apps.risks.urls')),
     # API v1 routes
     # path('api/v1/risks/', include('apps.risks.urls')),
     # path('api/v1/reports/', include('apps.reports.urls')),
