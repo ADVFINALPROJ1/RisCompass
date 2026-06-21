@@ -5,6 +5,8 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import CreateSnapshot from './pages/CreateSnapshot'
+import SnapshotDetail from './pages/SnapshotDetail'
+import ReportPage from './pages/ReportPage'
 
 function App() {
   return (
@@ -26,6 +28,22 @@ function App() {
           element={
             <ProtectedRoute>
               <CreateSnapshot />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/snapshots/:id"
+          element={
+            <ProtectedRoute>
+              <SnapshotDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reports/:id"
+          element={
+            <ProtectedRoute>
+              <ReportPage />
             </ProtectedRoute>
           }
         />

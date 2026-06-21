@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 export default function SnapshotCard({ snapshot }) {
   const [expanded, setExpanded] = useState(false)
@@ -64,6 +65,13 @@ export default function SnapshotCard({ snapshot }) {
         </div>
 
         <div className="mt-6 flex flex-col gap-3">
+          <Link
+            to={`/snapshots/${snapshot.id}`}
+            onClick={(e) => e.stopPropagation()}
+            className="inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary/90"
+          >
+            View Full Details
+          </Link>
           <button
             type="button"
             onClick={(e) => {
