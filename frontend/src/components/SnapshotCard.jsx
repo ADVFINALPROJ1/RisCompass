@@ -1,8 +1,11 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import snapshotsApi from '../api/snapshotsApi'
 
-export default function SnapshotCard({ snapshot }) {
+export default function SnapshotCard({ snapshot, onDelete }) {
   const [expanded, setExpanded] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   const toggleExpanded = () => setExpanded((value) => !value)
 
@@ -11,6 +14,31 @@ export default function SnapshotCard({ snapshot }) {
       event.preventDefault()
       toggleExpanded()
     }
+  }
+
+  const handleDelete = async (e) => {
+    e.stopPropagation()
+    setShowDeleteConfirm(true)
+  }
+
+  const confirmDelete = async () => {
+    setDeleting(true)
+    try {
+      await snapshotsApi.deleteSnapshot(snapshot.id)
+      setShowDeleteConfirm(false)
+      if (onDelete) {
+        onDelete(snapshot.id)
+      }
+    } catch (err) {
+      console.error('Failed to delete snapshot:', err)
+      alert('Failed to delete snapshot. Please try again.')
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+  const cancelDelete = () => {
+    setShowDeleteConfirm(false)
   }
 
   return (
@@ -82,6 +110,14 @@ export default function SnapshotCard({ snapshot }) {
           >
             {expanded ? 'Hide details' : 'View details'}
           </button>
+          <button
+            type="button"
+            onClick={handleDelete}
+            disabled={deleting}
+            className="inline-flex items-center justify-center rounded-full border border-red-500 px-4 py-2 text-sm font-semibold text-red-500 transition hover:bg-red-500 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {deleting ? 'Deleting...' : 'Delete'}
+          </button>
           <p className="text-xs text-slate-400">Click the card or button to reveal more information.</p>
         </div>
 
@@ -95,6 +131,33 @@ export default function SnapshotCard({ snapshot }) {
             </div>
             <div>
               <span className="font-semibold text-slate-900">Created:</span> {new Date(snapshot.created_at).toLocaleString()}
+            </div>
+          </div>
+        )}
+
+        {showDeleteConfirm && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <div className="max-w-md rounded-3xl border border-red-200 bg-white p-6 shadow-2xl">
+              <h3 className="text-xl font-semibold text-slate-900 mb-4">Delete Snapshot</h3>
+              <p className="text-slate-600 mb-6">
+                Are you sure you want to delete "{snapshot.title}"? This action cannot be undone.
+              </p>
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={cancelDelete}
+                  disabled={deleting}
+                  className="rounded-full border border-slate-300 px-6 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  disabled={deleting}
+                  className="rounded-full bg-red-500 px-6 py-2 text-sm font-semibold text-white transition hover:bg-red-600 disabled:opacity-50"
+                >
+                  {deleting ? 'Deleting...' : 'Delete'}
+                </button>
+              </div>
             </div>
           </div>
         )}

@@ -29,6 +29,10 @@ export default function Dashboard() {
     fetchSnapshots()
   }, [])
 
+  const handleDelete = (deletedId) => {
+    setSnapshots((prevSnapshots) => prevSnapshots.filter((snapshot) => snapshot.id !== deletedId))
+  }
+
   return (
     <div className="section">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -92,7 +96,7 @@ export default function Dashboard() {
             ) : (
               <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
                 {snapshots.map((snapshot) => (
-                  <SnapshotCard key={snapshot.id} snapshot={snapshot} />
+                  <SnapshotCard key={snapshot.id} snapshot={snapshot} onDelete={handleDelete} />
                 ))}
               </div>
             )}
