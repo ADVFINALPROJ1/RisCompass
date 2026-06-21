@@ -199,10 +199,11 @@ export default function CreateSnapshot() {
                     onChange={handleChange}
                     required
                     className="input-field"
+                    style={{ color: '#111827', backgroundColor: '#ffffff' }}
                   >
-                    <option value="">Select industry</option>
+                    <option value="" style={{ color: '#111827', backgroundColor: '#ffffff' }}>Select industry</option>
                     {industries.map((industry) => (
-                      <option key={industry.id} value={industry.id}>
+                      <option key={industry.id} value={industry.id} style={{ color: '#111827', backgroundColor: '#ffffff' }}>
                         {industry.name}
                       </option>
                     ))}
@@ -217,11 +218,12 @@ export default function CreateSnapshot() {
                     onChange={handleChange}
                     required
                     className="input-field"
+                    style={{ color: '#111827', backgroundColor: '#ffffff' }}
                   >
-                    <option value="">Select region</option>
+                    <option value="" style={{ color: '#111827', backgroundColor: '#ffffff' }}>Select region</option>
                     {regions.map((region) => (
-                      <option key={region.id} value={region.id}>
-                        {region.name}
+                      <option key={region.id} value={region.id} style={{ color: '#111827', backgroundColor: '#ffffff' }}>
+                        {region.region_name}
                       </option>
                     ))}
                   </select>

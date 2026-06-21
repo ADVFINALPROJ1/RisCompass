@@ -34,4 +34,4 @@ class BusinessSnapshotSerializer(serializers.ModelSerializer):
         return obj.industry.name if obj.industry else None
 
     def get_region_name(self, obj):
-        return obj.region.name if obj.region else None
+        return obj.region.region_name if obj.region else None
