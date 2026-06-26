@@ -6,6 +6,7 @@ import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import CreateSnapshot from './pages/CreateSnapshot'
 import SnapshotDetail from './pages/SnapshotDetail'
+import InterviewPage from './pages/InterviewPage'
 import ReportPage from './pages/ReportPage'
 
 function App() {
@@ -36,6 +37,14 @@ function App() {
           element={
             <ProtectedRoute>
               <SnapshotDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/interviews/:id"
+          element={
+            <ProtectedRoute>
+              <InterviewPage />
             </ProtectedRoute>
           }
         />
