@@ -19,7 +19,11 @@ class GeminiService:
         self.api_key = settings.GEMINI_API_KEY
         if not self.api_key:
             logger.warning("GEMINI_API_KEY not set in environment variables")
-        self.client = genai.Client(api_key=self.api_key) if self.api_key else None
+        try:
+            self.client = genai.Client(api_key=self.api_key) if self.api_key else None
+        except Exception as e:
+            logger.error(f"Failed to initialize Gemini client: {e}")
+            self.client = None
     
     def _build_prompt(
         self,

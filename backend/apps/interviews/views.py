@@ -170,7 +170,7 @@ def complete_interview(request, session_id):
     snapshot_data = {
         'company_name': snapshot.title,
         'industry': snapshot.industry.name if snapshot.industry else 'N/A',
-        'region': snapshot.region.name if snapshot.region else 'N/A',
+        'region': snapshot.region.region_name if snapshot.region else 'N/A',
         'description': snapshot.description
     }
     
@@ -191,12 +191,18 @@ def complete_interview(request, session_id):
         })
     
     # Call Gemini service
-    gemini_service = GeminiService()
-    insights = gemini_service.generate_insights(
-        snapshot=snapshot_data,
-        questions=questions_data,
-        answers=answers_data
-    )
+    try:
+        gemini_service = GeminiService()
+        insights = gemini_service.generate_insights(
+            snapshot=snapshot_data,
+            questions=questions_data,
+            answers=answers_data
+        )
+    except Exception as e:
+        return Response(
+            {'detail': f'Failed to generate AI insights: {str(e)}'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
     
     # Save AILocalInsight
     ai_insight, created = AILocalInsight.objects.update_or_create(
@@ -246,33 +252,57 @@ def complete_interview(request, session_id):
     )
     
     # Create RiskReport
-    risk_report = RiskReport.objects.create(
-        snapshot=snapshot,
-        overall_risk_score=overall_risk_score,
-        confidence_score=confidence_score,
-        confidence_label=confidence_label,
-        financial_risk=financial_risk,
-        market_risk=market_risk,
-        legal_risk=legal_risk,
-        cultural_risk=cultural_risk,
-        operational_risk=operational_risk,
-        summary=summary,
-        recommendation=recommendation,
-        data_sources_used=['ai_interview']
-    )
+    try:
+        risk_report = RiskReport.objects.create(
+            snapshot=snapshot,
+            overall_risk_score=overall_risk_score,
+            confidence_score=confidence_score,
+            confidence_label=confidence_label,
+            financial_risk=financial_risk,
+            market_risk=market_risk,
+            legal_risk=legal_risk,
+            cultural_risk=cultural_risk,
+            operational_risk=operational_risk,
+            summary=summary,
+            recommendation=recommendation,
+            data_sources_used=['ai_interview']
+        )
+    except Exception as e:
+        return Response(
+            {'detail': f'Failed to create risk report: {str(e)}'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
     
     # Create RiskFactors from AI insights
-    _create_ai_risk_factors(risk_report, insights)
+    try:
+        _create_ai_risk_factors(risk_report, insights)
+    except Exception as e:
+        return Response(
+            {'detail': f'Failed to create risk factors: {str(e)}'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
     
     # Update session status
-    session.status = InterviewSession.STATUS_COMPLETED
-    from django.utils import timezone
-    session.completed_at = timezone.now()
-    session.save()
+    try:
+        session.status = InterviewSession.STATUS_COMPLETED
+        from django.utils import timezone
+        session.completed_at = timezone.now()
+        session.save()
+    except Exception as e:
+        return Response(
+            {'detail': f'Failed to update session status: {str(e)}'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
     
     # Return response
-    ai_insight_serializer = AILocalInsightSerializer(ai_insight)
-    risk_report_serializer = RiskReportSerializer(risk_report)
+    try:
+        ai_insight_serializer = AILocalInsightSerializer(ai_insight)
+        risk_report_serializer = RiskReportSerializer(risk_report)
+    except Exception as e:
+        return Response(
+            {'detail': f'Failed to serialize response: {str(e)}'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
     
     return Response({
         'ai_insight': ai_insight_serializer.data,
