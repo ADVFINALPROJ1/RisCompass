@@ -95,7 +95,9 @@ export default function InterviewPage() {
       const reportId = response.data.risk_report.id
       navigate(`/reports/${reportId}`)
     } catch (err) {
-      setError('Failed to complete interview. Please try again.')
+      console.error('Interview completion error:', err)
+      const errorMessage = err.response?.data?.detail || err.response?.data?.error || err.message || 'Failed to complete interview. Please try again.'
+      setError(errorMessage)
       setCompleting(false)
     }
   }
