@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import reportsApi from '../api/reportsApi'
 import LoadingSpinner from '../components/LoadingSpinner'
+import RiskScoreCard from '../components/RiskScoreCard'
+import ConfidenceGauge from '../components/ConfidenceGauge'
+import RiskRadarChart from '../components/RiskRadarChart'
+import RiskFactorList from '../components/RiskFactorList'
 
 export default function ReportPage() {
   const { id } = useParams()
@@ -24,21 +28,6 @@ export default function ReportPage() {
     fetchReport()
   }, [id])
 
-  const getRiskLevelColor = (score) => {
-    if (score < 20) return 'text-green-600 bg-green-50'
-    if (score < 40) return 'text-lime-600 bg-lime-50'
-    if (score < 60) return 'text-yellow-600 bg-yellow-50'
-    if (score < 80) return 'text-orange-600 bg-orange-50'
-    return 'text-red-600 bg-red-50'
-  }
-
-  const getRiskLevelLabel = (score) => {
-    if (score < 20) return 'Very Low'
-    if (score < 40) return 'Low'
-    if (score < 60) return 'Medium'
-    if (score < 80) return 'High'
-    return 'Very High'
-  }
 
   if (loading) {
     return <LoadingSpinner />
@@ -80,81 +69,30 @@ export default function ReportPage() {
 
       <div className="space-y-8">
         {/* Overall Risk Score */}
-        <div className="rounded-[2rem] border border-slate-200 bg-gradient-to-br from-slate-900 to-slate-950 p-8 text-white shadow-2xl">
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-300">Risk Report</p>
-              <h1 className="mt-3 text-4xl font-semibold">{report.snapshot_title || 'Risk Assessment'}</h1>
-              <p className="mt-2 text-sm text-slate-300">
-                Generated on {new Date(report.created_at).toLocaleDateString()}
-              </p>
-            </div>
-            <div className="text-center sm:text-right">
-              <div className="text-sm uppercase tracking-[0.2em] text-slate-300">Overall Risk Score</div>
-              <div className="mt-2 text-6xl font-bold">{report.overall_risk_score}/100</div>
-              <div className={`mt-2 inline-block rounded-full px-4 py-2 text-sm font-semibold ${getRiskLevelColor(report.overall_risk_score).replace('text-', 'text-white ').replace('bg-', 'bg-')}`}>
-                {getRiskLevelLabel(report.overall_risk_score)}
-              </div>
-            </div>
-          </div>
-        </div>
+        <RiskScoreCard
+          score={report.overall_risk_score}
+          title="Risk Report"
+          snapshotTitle={report.snapshot_title}
+          createdAt={report.created_at}
+        />
 
         {/* Confidence Score */}
-        <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-xl">
-          <h2 className="text-2xl font-semibold text-slate-950">Confidence Assessment</h2>
-          <div className="mt-6 grid gap-6 sm:grid-cols-2">
-            <div className="rounded-2xl bg-slate-50 p-6">
-              <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Confidence Score</div>
-              <div className="mt-2 text-3xl font-bold text-slate-900">{report.confidence_score}/100</div>
-            </div>
-            <div className="rounded-2xl bg-slate-50 p-6">
-              <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Confidence Label</div>
-              <div className="mt-2 text-3xl font-bold text-slate-900">{report.confidence_label}</div>
-            </div>
-          </div>
-        </div>
+        <ConfidenceGauge
+          score={report.confidence_score}
+          label={report.confidence_label}
+        />
 
         {/* Risk Categories */}
-        <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-xl">
-          <h2 className="text-2xl font-semibold text-slate-950">Risk Categories</h2>
-          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="rounded-2xl bg-slate-50 p-6">
-              <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Financial Risk</div>
-              <div className="mt-2 text-3xl font-bold text-slate-900">{report.financial_risk}/100</div>
-              <div className={`mt-2 inline-block rounded-full px-3 py-1 text-xs font-semibold ${getRiskLevelColor(report.financial_risk)}`}>
-                {getRiskLevelLabel(report.financial_risk)}
-              </div>
-            </div>
-            <div className="rounded-2xl bg-slate-50 p-6">
-              <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Market Risk</div>
-              <div className="mt-2 text-3xl font-bold text-slate-900">{report.market_risk}/100</div>
-              <div className={`mt-2 inline-block rounded-full px-3 py-1 text-xs font-semibold ${getRiskLevelColor(report.market_risk)}`}>
-                {getRiskLevelLabel(report.market_risk)}
-              </div>
-            </div>
-            <div className="rounded-2xl bg-slate-50 p-6">
-              <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Legal Risk</div>
-              <div className="mt-2 text-3xl font-bold text-slate-900">{report.legal_risk}/100</div>
-              <div className={`mt-2 inline-block rounded-full px-3 py-1 text-xs font-semibold ${getRiskLevelColor(report.legal_risk)}`}>
-                {getRiskLevelLabel(report.legal_risk)}
-              </div>
-            </div>
-            <div className="rounded-2xl bg-slate-50 p-6">
-              <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Cultural Risk</div>
-              <div className="mt-2 text-3xl font-bold text-slate-900">{report.cultural_risk}/100</div>
-              <div className={`mt-2 inline-block rounded-full px-3 py-1 text-xs font-semibold ${getRiskLevelColor(report.cultural_risk)}`}>
-                {getRiskLevelLabel(report.cultural_risk)}
-              </div>
-            </div>
-            <div className="rounded-2xl bg-slate-50 p-6">
-              <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Operational Risk</div>
-              <div className="mt-2 text-3xl font-bold text-slate-900">{report.operational_risk}/100</div>
-              <div className={`mt-2 inline-block rounded-full px-3 py-1 text-xs font-semibold ${getRiskLevelColor(report.operational_risk)}`}>
-                {getRiskLevelLabel(report.operational_risk)}
-              </div>
-            </div>
-          </div>
-        </div>
+        <RiskRadarChart
+          riskData={{
+            overall_risk_score: report.overall_risk_score,
+            financial_risk: report.financial_risk,
+            market_risk: report.market_risk,
+            legal_risk: report.legal_risk,
+            cultural_risk: report.cultural_risk,
+            operational_risk: report.operational_risk,
+          }}
+        />
 
         {/* Summary and Recommendation */}
         <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-xl">
@@ -172,37 +110,7 @@ export default function ReportPage() {
         </div>
 
         {/* Risk Factors */}
-        {report.risk_factors && report.risk_factors.length > 0 && (
-          <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-xl">
-            <h2 className="text-2xl font-semibold text-slate-950">Risk Factors</h2>
-            <div className="mt-6 space-y-4">
-              {report.risk_factors.map((factor) => (
-                <div key={factor.id} className="rounded-2xl bg-slate-50 p-6">
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3">
-                        <span className="rounded-full bg-slate-200 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-700">
-                          {factor.category}
-                        </span>
-                        <h3 className="text-lg font-semibold text-slate-900">{factor.name}</h3>
-                      </div>
-                      <p className="mt-2 text-sm text-slate-600">{factor.explanation || 'No explanation available.'}</p>
-                      <div className="mt-2 text-xs text-slate-400">
-                        Source: {factor.source_type?.replace('_', ' ') || 'Unknown'}
-                      </div>
-                    </div>
-                    <div className="text-center sm:text-right">
-                      <div className="text-3xl font-bold text-slate-900">{factor.score}/100</div>
-                      <div className={`mt-1 inline-block rounded-full px-3 py-1 text-xs font-semibold ${getRiskLevelColor(factor.score)}`}>
-                        {getRiskLevelLabel(factor.score)}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        <RiskFactorList riskFactors={report.risk_factors} />
 
         {/* Data Sources */}
         {report.data_sources_used && report.data_sources_used.length > 0 && (
