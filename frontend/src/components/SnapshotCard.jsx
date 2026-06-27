@@ -100,6 +100,25 @@ export default function SnapshotCard({ snapshot, onDelete }) {
           >
             View Full Details
           </Link>
+          {snapshot.interview_session && (
+            <Link
+              to={`/interviews/${snapshot.interview_session.id}`}
+              onClick={(e) => e.stopPropagation()}
+              className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition ${
+                snapshot.interview_session.status === 'completed'
+                  ? 'bg-green-500 text-white hover:bg-green-600'
+                  : snapshot.interview_session.status === 'in_progress'
+                  ? 'bg-amber-500 text-white hover:bg-amber-600'
+                  : 'bg-purple-500 text-white hover:bg-purple-600'
+              }`}
+            >
+              {snapshot.interview_session.status === 'completed'
+                ? 'View Interview Report'
+                : snapshot.interview_session.status === 'in_progress'
+                ? 'Continue Interview'
+                : 'Start Interview'}
+            </Link>
+          )}
           <button
             type="button"
             onClick={(e) => {
