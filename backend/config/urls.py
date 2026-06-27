@@ -23,6 +23,8 @@ urlpatterns = [
     path('api/snapshots/', include('apps.snapshots.urls')),
     # Risk reports endpoints
     path('api/', include('apps.risks.urls')),
+    # Interview flow endpoints
+    path('api/interviews/', include('apps.interviews.urls')),
     # API v1 routes
     # path('api/v1/risks/', include('apps.risks.urls')),
     # path('api/v1/reports/', include('apps.reports.urls')),
