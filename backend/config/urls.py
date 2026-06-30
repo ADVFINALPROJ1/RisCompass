@@ -25,6 +25,8 @@ urlpatterns = [
     path('api/', include('apps.risks.urls')),
     # Interview flow endpoints
     path('api/interviews/', include('apps.interviews.urls')),
+    # Comparisons endpoints
+    path('api/comparisons/', include('apps.comparisons.urls')),
     # API v1 routes
     # path('api/v1/risks/', include('apps.risks.urls')),
     # path('api/v1/reports/', include('apps.reports.urls')),

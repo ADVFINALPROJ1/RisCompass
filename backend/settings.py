@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'apps.external_data',
     'apps.risks',
     'apps.interviews',
+    'apps.comparisons',
     # 'apps.users',
     # 'apps.reports',
 ]
