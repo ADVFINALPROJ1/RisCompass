@@ -42,6 +42,6 @@ class BusinessSnapshotSerializer(serializers.ModelSerializer):
         """Get the most recent interview session for this snapshot"""
         interview_session = obj.interview_sessions.first()
         if interview_session:
-            from apps.interviews.serializers import InterviewSessionSerializer
-            return InterviewSessionSerializer(interview_session).data
+            from apps.interviews.serializers import InterviewSessionWithQuestionsSerializer
+            return InterviewSessionWithQuestionsSerializer(interview_session).data
         return None

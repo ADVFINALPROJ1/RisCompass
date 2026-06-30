@@ -55,11 +55,12 @@ class InterviewSessionWithQuestionsSerializer(serializers.ModelSerializer):
     """Serializer for GET /api/interviews/<session_id>/ - returns session and questions"""
     questions = serializers.SerializerMethodField()
     answers = InterviewAnswerSerializer(many=True, read_only=True)
+    risk_report_id = serializers.SerializerMethodField()
     
     class Meta:
         model = InterviewSession
         fields = ['id', 'snapshot', 'status', 'trigger_reason', 'started_at', 
-                  'completed_at', 'created_at', 'updated_at', 'questions', 'answers']
+                  'completed_at', 'created_at', 'updated_at', 'questions', 'answers', 'risk_report_id']
         read_only_fields = ('id', 'created_at', 'updated_at')
     
     def get_questions(self, obj):
@@ -72,6 +73,17 @@ class InterviewSessionWithQuestionsSerializer(serializers.ModelSerializer):
         )
         questions = questions.filter(is_active=True).distinct()
         return InterviewQuestionSerializer(questions, many=True).data
+    
+    def get_risk_report_id(self, obj):
+        """Get the risk report ID if the interview is completed"""
+        if obj.status == InterviewSession.STATUS_COMPLETED:
+            try:
+                from apps.risks.models import RiskReport
+                report = RiskReport.objects.filter(snapshot=obj.snapshot).latest('created_at')
+                return report.id
+            except RiskReport.DoesNotExist:
+                return None
+        return None
 
 
 class AnswerCreateSerializer(serializers.Serializer):
