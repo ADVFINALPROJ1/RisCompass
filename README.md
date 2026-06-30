@@ -171,7 +171,21 @@ VITE_API_BASE_URL=http://localhost:8000/api
    ```
    * The app will open at `http://localhost:5173`.
 
+### 🐳 Docker Deployment (Recommended)
+If you have Docker Desktop installed, you can build and run the entire stack (PostgreSQL, Django Backend, React/Nginx Frontend) in one command:
+1. Ensure your `.env` file exists at `backend/.env` containing your `GEMINI_API_KEY`.
+2. Open Docker Desktop to make sure the Docker daemon is running.
+3. From the root directory, run:
+   ```bash
+   docker compose up --build -d
+   ```
+4. The services will be available at:
+   - **Frontend**: `http://localhost:3000`
+   - **Backend API**: `http://localhost:8000`
+   - Note: Database migrations and seeder data (regions, industries, questions) will run automatically inside the containers during start.
+
 ---
+
 
 ## 🎭 Demo Flow
 
@@ -189,6 +203,7 @@ VITE_API_BASE_URL=http://localhost:8000/api
 * **Single Currency Support**: Comparison comparisons are based on risk weights rather than currency conversions.
 
 ## 🔮 Future Improvements
+* **User Profile and Account Manager**: Enable wide range of customization and user management.
 * **Automated Data Syncing**: Set up cron jobs to automatically update cached World Bank indicators periodically.
 * **Offline Mock LLM Mode**: Implement a local fallback analyzer for when API keys are not supplied.
 * **Exporting Options**: Enable users to export generated risk reports to PDF or CSV formats.
@@ -198,6 +213,6 @@ VITE_API_BASE_URL=http://localhost:8000/api
 ## 👥 Team Members
 
 This project was built for the Advanced Software Engineering Project course by:
-* **Developer 1**: Project Manager & Backend Lead
-* **Developer 2**: React Frontend Developer & UX Designer
-* **Developer 3**: QA Engineer & Data Analyst
+* **BETEMARIYAM ABATE ID (0233/25)**: Project Manager & Backend Lead
+* **Bilal Shemsu ID (0234/25)**: Backend Developer & Data Analyst
+* **Biladen Mustefa ID (0235/25)**: Frontend Developer & UX Designer
