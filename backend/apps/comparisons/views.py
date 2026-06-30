@@ -31,15 +31,22 @@ class ComparisonViewSet(viewsets.ModelViewSet):
             "filter_focus": <string>
         }
         """
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info(f"Comparison request data: {request.data}")
+        
         serializer = ComparisonCreateSerializer(data=request.data)
         
         if not serializer.is_valid():
+            logger.error(f"Serializer errors: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
         snapshot_a = serializer.validated_data['snapshot_a']
         snapshot_b = serializer.validated_data['snapshot_b']
         title = serializer.validated_data.get('title')
         filter_focus = serializer.validated_data['filter_focus']
+        
+        logger.info(f"Validated data - snapshot_a: {snapshot_a.id}, snapshot_b: {snapshot_b.id}, filter_focus: {filter_focus}")
         
         # Security: Users can only compare their own snapshots
         if snapshot_a.user != request.user or snapshot_b.user != request.user:
@@ -65,11 +72,15 @@ class ComparisonViewSet(viewsets.ModelViewSet):
             return Response(response_serializer.data, status=status.HTTP_201_CREATED)
         
         except ValueError as e:
+            logger.error(f"ValueError in comparison: {str(e)}")
             return Response(
                 {'detail': str(e)},
                 status=status.HTTP_400_BAD_REQUEST
             )
         except Exception as e:
+            import traceback
+            traceback.print_exc()
+            logger.error(f"Exception in comparison: {str(e)}")
             return Response(
                 {'detail': f'Error creating comparison: {str(e)}'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
