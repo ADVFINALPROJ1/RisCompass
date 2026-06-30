@@ -8,6 +8,7 @@ import CreateSnapshot from './pages/CreateSnapshot'
 import SnapshotDetail from './pages/SnapshotDetail'
 import InterviewPage from './pages/InterviewPage'
 import ReportPage from './pages/ReportPage'
+import ComparePage from './pages/ComparePage'
 
 function App() {
   return (
@@ -53,6 +54,14 @@ function App() {
           element={
             <ProtectedRoute>
               <ReportPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/compare"
+          element={
+            <ProtectedRoute>
+              <ComparePage />
             </ProtectedRoute>
           }
         />

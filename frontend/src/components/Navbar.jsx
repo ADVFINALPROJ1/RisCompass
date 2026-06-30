@@ -14,6 +14,12 @@ export default function Navbar() {
         <div className="flex items-center gap-6">
           {isAuthenticated ? (
             <>
+              <Link to="/dashboard" className="text-gray-700 hover:text-primary">
+                Dashboard
+              </Link>
+              <Link to="/compare" className="text-gray-700 hover:text-primary">
+                Compare
+              </Link>
               <span className="text-gray-700">{user?.email}</span>
               <button
                 onClick={logout}
