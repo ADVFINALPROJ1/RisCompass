@@ -1,228 +1,99 @@
-# RisCompass Frontend
+# RisCompass Frontend 🧭💻
 
-A modern React + Vite frontend for the RisCompass risk assessment platform.
+This is the React + Vite + Tailwind CSS frontend application for RisCompass. It offers a premium, modern dashboard UI featuring custom visualization charts (Recharts), reactive multi-step forms, a comparison tool, and an interactive step-by-step interview wizard.
 
-## 📦 Tech Stack
+---
 
-- **React 18** - UI library
-- **Vite** - Fast build tool and dev server
-- **Tailwind CSS** - Utility-first CSS framework
-- **React Router** - Client-side routing
-- **Axios** - HTTP client with interceptors
-- **Recharts** - Chart library for data visualization
+## 🎨 Design System & UI Principles
+RisCompass frontend utilizes **Vanilla CSS** coupled with **Tailwind CSS** configuration to create a premium visual experience:
+* **Glassmorphism**: Elegant card borders, subtle background blurs, and premium dark/light toggles.
+* **Modern Typography**: Inter and Outfit Google Fonts for high readability.
+* **Micro-Animations**: Hover-triggered translations, fading transition entries, and shimmer effect indicators.
+* **Color Palettes**: Harmony of slate-gray neutrals combined with energetic primary blue (`#3b82f6`) and green (`#10b981`) gradients.
+
+---
 
 ## 🗂️ Project Structure
 
-```
+The project structure keeps components, contexts, pages, styles, and api wrappers decoupled:
+
+```text
 frontend/
 ├── src/
-│   ├── components/           # Reusable React components
-│   │   ├── Navbar.jsx        # Navigation bar
-│   │   ├── ProtectedRoute.jsx # Authentication guard
-│   │   └── LoadingSpinner.jsx # Loading indicator
-│   ├── context/              # React Context for state management
-│   │   └── AuthContext.jsx   # Authentication context
-│   ├── pages/                # Page components
-│   │   ├── Login.jsx         # Login page
-│   │   ├── Register.jsx      # Registration page
-│   │   └── Dashboard.jsx     # Dashboard with charts
-│   ├── styles/               # Global styles
-│   │   └── index.css         # Tailwind + custom utilities
-│   ├── utils/                # Utility functions
-│   │   └── api.js            # Axios instance with interceptors
-│   ├── App.jsx               # Main app with routing
-│   └── main.jsx              # Entry point
-├── public/                   # Static assets
-├── index.html                # HTML template
-├── package.json              # Dependencies
-├── vite.config.js            # Vite configuration
-├── tailwind.config.js        # Tailwind CSS configuration
-├── postcss.config.js         # PostCSS configuration
-└── .env.example              # Environment variables template
+│   ├── api/                  # API client modules
+│   │   ├── accountsApi.js    # Register, login, and profile fetching
+│   │   ├── snapshotsApi.js   # Creation and listing of snapshots
+│   │   ├── reportsApi.js     # Generating and reading risk reports
+│   │   ├── regionsApi.js     # Loading geographic options
+│   │   └── industriesApi.js  # Loading industry classes
+│   ├── components/           # Reusable UI widgets
+│   │   ├── Navbar.jsx        # Navigation header
+│   │   ├── ProtectedRoute.jsx# Auth route guard
+│   │   ├── ConfidenceGauge.jsx# SVG score gauge
+│   │   ├── RiskRadarChart.jsx # Recharts radar breakdown
+│   │   ├── RiskFactorList.jsx # Listing of individual risk items
+│   │   └── LoadingSpinner.jsx # Visual loading feedback
+│   ├── context/              # Context State Providers
+│   │   └── AuthContext.jsx   # Global user login state management
+│   ├── pages/                # High-level page views
+│   │   ├── Login.jsx         # Login form page
+│   │   ├── Register.jsx      # Registration form page
+│   │   ├── Dashboard.jsx     # User command center and snapshot lists
+│   │   ├── CreateSnapshot.jsx# Multi-step business setup wizard
+│   │   ├── SnapshotDetail.jsx# Detailed snapshot overview
+│   │   ├── InterviewPage.jsx # AI interactive questionnaire
+│   │   ├── ReportPage.jsx    # Visualized risk reports
+│   │   └── ComparePage.jsx   # Side-by-side snapshot compare utility
+│   ├── styles/               # CSS assets
+│   │   └── index.css         # Custom stylesheet and Tailwind base
+│   └── utils/
+│       └── api.js            # Axios client with JWT auto-inject & token refresh interceptors
+├── package.json              # Core package configurations
+└── tailwind.config.js        # Design tokens and tailwind utilities
 ```
 
-## 🚀 Getting Started
+---
 
-### Prerequisites
+## 🚀 Installation & Running
 
-- Node.js 24.16.0 LTS and npm
+### 1. Prerequisites
+* Node.js (v18+ recommended)
+* npm (v9+ recommended)
 
-### Installation
-
+### 2. Install Package Dependencies
 ```bash
+# Navigate to the frontend directory
 cd frontend
+
+# Install packages
 npm install
 ```
 
-### Environment Setup
-
-Create a `.env` file from `.env.example`:
-
-```bash
-cp .env.example .env
-```
-
-Then update it with your API base URL:
-
+### 3. Configure Environment Variables
+Create a `.env` file in the root of the `frontend/` directory (you can copy `.env.example` if available):
 ```env
 VITE_API_BASE_URL=http://localhost:8000/api
 ```
 
-### Development Server
-
+### 4. Start Development Server
 ```bash
 npm run dev
 ```
+The application will launch locally at `http://localhost:5173`.
 
-The frontend will be available at `http://localhost:5173`
-
-### Build for Production
-
+### 5. Production Build
+To create an optimized production build of the static site assets:
 ```bash
 npm run build
 ```
+The output assets will be saved to the `dist/` directory, ready to be hosted on Netlify, Vercel, or static web servers.
 
-Output will be in the `dist/` folder.
+---
 
-### Preview Production Build
+## 🔑 Core Features & Navigation Flows
 
-```bash
-npm run preview
-```
-
-## 🔑 Key Features
-
-### Authentication
-
-- **AuthContext** manages user state globally
-- JWT tokens stored in localStorage
-- Automatic token refresh on 401 errors
-- Protected routes redirect unauthenticated users to login
-
-### API Integration
-
-- **Axios instance** with interceptors for:
-  - Automatic token injection
-  - Token refresh on expiry
-  - Error handling
-
-### UI Components
-
-- **Navbar**: Responsive navigation with user info and logout
-- **ProtectedRoute**: Guards routes from unauthorized access
-- **LoadingSpinner**: Elegant loading state indicator
-- **Custom Tailwind utilities**: Pre-styled buttons, inputs, cards
-
-### Dashboard
-
-- Welcome message personalized with user name
-- Stats cards showing key metrics
-- Line chart for risk trends
-- Bar chart for assessments overview
-- Placeholder section for recent risks
-
-## 🎨 Tailwind CSS Customization
-
-Custom colors and utilities are defined in `tailwind.config.js` and `src/styles/index.css`:
-
-- Primary color: `#3b82f6` (blue)
-- Secondary color: `#10b981` (green)
-- Danger color: `#ef4444` (red)
-- Warning color: `#f59e0b` (amber)
-
-### Available CSS Classes
-
-```css
-.btn-primary      /* Primary button */
-.btn-secondary    /* Secondary button */
-.btn-outline      /* Outline button */
-.input-field      /* Styled input */
-.card             /* Card container */
-.section          /* Page section with max-width */
-```
-
-## 📝 Environment Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `VITE_API_BASE_URL` | `http://localhost:8000/api` | Backend API base URL |
-
-## 🔗 API Endpoints Expected
-
-The frontend expects the backend to provide these endpoints:
-
-- `POST /auth/login/` - Login user
-- `POST /auth/register/` - Register new user
-- `POST /auth/token/refresh/` - Refresh access token
-
-Adjust the endpoints in `src/utils/api.js` if your backend uses different paths.
-
-## 📚 Adding New Pages
-
-1. Create a new component in `src/pages/`
-2. Add a route in `src/App.jsx`:
-
-```jsx
-<Route path="/your-page" element={<YourPage />} />
-```
-
-3. For protected pages, wrap with `<ProtectedRoute>`:
-
-```jsx
-<Route
-  path="/protected-page"
-  element={
-    <ProtectedRoute>
-      <ProtectedPage />
-    </ProtectedRoute>
-  }
-/>
-```
-
-## 📚 Adding New Components
-
-1. Create component in `src/components/`
-2. Use Tailwind classes for styling
-3. Import and use in pages
-
-Example:
-
-```jsx
-// src/components/Card.jsx
-export default function Card({ title, children }) {
-  return (
-    <div className="card">
-      <h3 className="font-bold mb-4">{title}</h3>
-      {children}
-    </div>
-  )
-}
-```
-
-## 🐛 Troubleshooting
-
-### Port already in use
-
-Change the port in `vite.config.js`:
-
-```js
-server: {
-  port: 3000, // Change to another port
-}
-```
-
-### API calls failing
-
-1. Check `VITE_API_BASE_URL` in `.env`
-2. Ensure backend is running
-3. Check browser console for CORS errors
-
-### Styling not applying
-
-- Ensure Tailwind classes are spelled correctly
-- Run `npm run build` if using production build
-- Clear browser cache
-
-## 📞 Support
-
-For issues, check the main RisCompass README or contact the development team.
+1. **Authentication Guard**: Unauthenticated users trying to hit internal pages like `/dashboard` or `/compare` are intercepted by the `ProtectedRoute` component and redirected back to `/login`.
+2. **Dynamic Snapshot Creation**: The `CreateSnapshot` page automatically pre-loads available industries and regions from the backend database to offer select menus.
+3. **Data Availability Triggers**: If a user selects a region marked with `low` data availability, the detail view replaces the standard report button with a "Start Interview" prompt.
+4. **Interactive AI Interview Wizard**: In `InterviewPage.jsx`, the user responds to a series of contextual questions. The frontend sends their response back to Django to trigger Gemini AI assessment calculations.
+5. **Comparison Tool**: `ComparePage.jsx` renders side-by-side risk score panels, using filters to evaluate which business has the lower risk footprint.
