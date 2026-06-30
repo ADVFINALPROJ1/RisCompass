@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import interviewsApi from '../api/interviewsApi'
 import LoadingSpinner from '../components/LoadingSpinner'
+import ErrorMessage from '../components/ErrorMessage'
+import EmptyState from '../components/EmptyState'
 
 export default function InterviewPage() {
   const { id } = useParams()
@@ -216,15 +218,19 @@ export default function InterviewPage() {
   }
 
   if (loading) {
-    return <LoadingSpinner />
+    return (
+      <div className="section">
+        <LoadingSpinner />
+      </div>
+    )
   }
 
   if (error) {
     return (
       <div className="section">
-        <div className="rounded-3xl border border-red-200 bg-red-50 p-8 text-center">
-          <p className="text-red-700">{error}</p>
-          <Link to="/dashboard" className="btn-primary mt-4 inline-flex items-center justify-center">
+        <ErrorMessage message={error} />
+        <div className="mt-6">
+          <Link to="/dashboard" className="btn-primary">
             Back to Dashboard
           </Link>
         </div>
@@ -235,12 +241,12 @@ export default function InterviewPage() {
   if (!session) {
     return (
       <div className="section">
-        <div className="rounded-3xl border border-slate-200 bg-slate-50 p-8 text-center">
-          <p className="text-slate-600">Interview session not found.</p>
-          <Link to="/dashboard" className="btn-primary mt-4 inline-flex items-center justify-center">
-            Back to Dashboard
-          </Link>
-        </div>
+        <EmptyState
+          title="Interview session not found"
+          description="The interview session you're looking for doesn't exist or may have been deleted."
+          actionText="Back to Dashboard"
+          actionLink="/dashboard"
+        />
       </div>
     )
   }
@@ -254,19 +260,22 @@ export default function InterviewPage() {
   const progress = totalQuestions > 0 ? Math.round((answeredCount / totalQuestions) * 100) : 0
 
   return (
-    <div className="section">
+    <div className="section animate-fade-in">
       <div className="mb-8">
-        <Link to="/dashboard" className="text-sm text-slate-500 hover:text-slate-700">
-          ← Back to Dashboard
+        <Link to="/dashboard" className="inline-flex items-center text-sm text-slate-500 hover:text-slate-700 transition-colors">
+          <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Dashboard
         </Link>
       </div>
 
       <div className="space-y-8">
         {/* Header */}
-        <div className="rounded-[2rem] border border-slate-200 bg-gradient-to-br from-slate-900 to-slate-950 p-8 text-white shadow-2xl">
+        <div className="card-dark">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-300">Interview</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] animate-text-shimmer">Interview</p>
               <h1 className="mt-3 text-4xl font-semibold">Risk Assessment Interview</h1>
               <p className="mt-2 text-sm text-slate-300">
                 {session.trigger_reason || 'Please answer the following questions to help us assess your business risks.'}
@@ -277,7 +286,7 @@ export default function InterviewPage() {
               <div className="mt-2 text-4xl font-bold">{answeredCount}/{totalQuestions}</div>
               <div className="mt-2 h-2 w-32 overflow-hidden rounded-full bg-slate-700 sm:ml-auto">
                 <div 
-                  className="h-full bg-primary transition-all duration-300"
+                  className="h-full bg-primary-500 transition-all duration-300"
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -286,19 +295,22 @@ export default function InterviewPage() {
         </div>
 
         {/* Questions */}
-        <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-xl">
+        <div className="card">
           <h2 className="text-2xl font-semibold text-slate-950">Questions</h2>
           
           {questions.length === 0 ? (
-            <div className="mt-6 rounded-2xl bg-slate-50 p-8 text-center">
-              <p className="text-slate-600">No questions available for this interview.</p>
+            <div className="mt-6">
+              <EmptyState
+                title="No questions available"
+                description="There are no questions available for this interview session."
+              />
             </div>
           ) : (
             <div className="mt-6 space-y-8">
               {questions.map((question, index) => (
                 <div key={question.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
                   <div className="mb-4 flex flex-wrap items-center gap-3">
-                    <span className="rounded-full bg-primary px-3 py-1 text-sm font-semibold text-white">
+                    <span className="rounded-full bg-primary-500 px-3 py-1 text-sm font-semibold text-white">
                       Q{index + 1}
                     </span>
                     <span className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] ${getRiskCategoryColor(question.risk_category)}`}>
@@ -314,16 +326,16 @@ export default function InterviewPage() {
         </div>
 
         {/* Actions */}
-        <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-xl">
+        <div className="card">
           {saveError && (
-            <div className="mb-6 rounded-3xl border border-red-200 bg-red-50 p-5 text-sm text-red-700">
-              {saveError}
+            <div className="mb-6">
+              <ErrorMessage message={saveError} onDismiss={() => setSaveError('')} />
             </div>
           )}
           
           {error && (
-            <div className="mb-6 rounded-3xl border border-red-200 bg-red-50 p-5 text-sm text-red-700">
-              {error}
+            <div className="mb-6">
+              <ErrorMessage message={error} onDismiss={() => setError('')} />
             </div>
           )}
 
@@ -331,14 +343,14 @@ export default function InterviewPage() {
             <button
               onClick={handleSaveAnswers}
               disabled={submitting || questions.length === 0}
-              className="btn-secondary inline-flex items-center justify-center px-8 py-4"
+              className="btn-secondary"
             >
               {submitting ? 'Saving...' : 'Save Progress'}
             </button>
             <button
               onClick={handleCompleteInterview}
               disabled={completing || answeredCount === 0 || questions.length === 0}
-              className="btn-primary inline-flex items-center justify-center px-8 py-4"
+              className="btn-primary"
             >
               {completing ? 'Processing...' : 'Complete & Generate Report'}
             </button>

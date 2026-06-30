@@ -6,6 +6,8 @@ import RiskScoreCard from '../components/RiskScoreCard'
 import ConfidenceGauge from '../components/ConfidenceGauge'
 import RiskRadarChart from '../components/RiskRadarChart'
 import RiskFactorList from '../components/RiskFactorList'
+import ErrorMessage from '../components/ErrorMessage'
+import EmptyState from '../components/EmptyState'
 
 export default function ReportPage() {
   const { id } = useParams()
@@ -30,15 +32,19 @@ export default function ReportPage() {
 
 
   if (loading) {
-    return <LoadingSpinner />
+    return (
+      <div className="section">
+        <LoadingSpinner />
+      </div>
+    )
   }
 
   if (error) {
     return (
       <div className="section">
-        <div className="rounded-3xl border border-red-200 bg-red-50 p-8 text-center">
-          <p className="text-red-700">{error}</p>
-          <Link to="/dashboard" className="btn-primary mt-4 inline-flex items-center justify-center">
+        <ErrorMessage message={error} />
+        <div className="mt-6">
+          <Link to="/dashboard" className="btn-primary">
             Back to Dashboard
           </Link>
         </div>
@@ -49,21 +55,24 @@ export default function ReportPage() {
   if (!report) {
     return (
       <div className="section">
-        <div className="rounded-3xl border border-slate-200 bg-slate-50 p-8 text-center">
-          <p className="text-slate-600">Report not found.</p>
-          <Link to="/dashboard" className="btn-primary mt-4 inline-flex items-center justify-center">
-            Back to Dashboard
-          </Link>
-        </div>
+        <EmptyState
+          title="Report not found"
+          description="The risk report you're looking for doesn't exist or may have been deleted."
+          actionText="Back to Dashboard"
+          actionLink="/dashboard"
+        />
       </div>
     )
   }
 
   return (
-    <div className="section">
+    <div className="section animate-fade-in">
       <div className="mb-8">
-        <Link to="/dashboard" className="text-sm text-slate-500 hover:text-slate-700">
-          ← Back to Dashboard
+        <Link to="/dashboard" className="inline-flex items-center text-sm text-slate-500 hover:text-slate-700 transition-colors">
+          <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Dashboard
         </Link>
       </div>
 
@@ -95,8 +104,8 @@ export default function ReportPage() {
         />
 
         {/* Summary and Recommendation */}
-        <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-xl">
-          <h2 className="text-2xl font-semibold text-slate-950">Summary & Recommendation</h2>
+        <div className="card">
+          <h2 className="text-2xl font-semibold text-gradient-primary">Summary & Recommendation</h2>
           <div className="mt-6 space-y-6">
             <div className="rounded-2xl bg-slate-50 p-6">
               <h3 className="text-lg font-semibold text-slate-900">Summary</h3>
@@ -114,7 +123,7 @@ export default function ReportPage() {
 
         {/* Data Sources */}
         {report.data_sources_used && report.data_sources_used.length > 0 && (
-          <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-xl">
+          <div className="card">
             <h2 className="text-2xl font-semibold text-slate-950">Data Sources</h2>
             <div className="mt-4 flex flex-wrap gap-2">
               {report.data_sources_used.map((source, index) => (

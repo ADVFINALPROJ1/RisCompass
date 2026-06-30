@@ -4,6 +4,7 @@ import industriesApi from '../api/industriesApi'
 import regionsApi from '../api/regionsApi'
 import snapshotsApi from '../api/snapshotsApi'
 import LoadingSpinner from '../components/LoadingSpinner'
+import ErrorMessage from '../components/ErrorMessage'
 
 const businessStages = [
   { value: 'idea', label: 'Idea' },
@@ -103,11 +104,11 @@ export default function CreateSnapshot() {
   if (loading) return <LoadingSpinner />
 
   return (
-    <div className="section">
+    <div className="section animate-fade-in">
       <div className="grid gap-8 xl:grid-cols-[1.05fr_0.95fr]">
         <div className="space-y-6">
-          <div className="rounded-[2rem] border border-slate-200 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-8 text-white shadow-2xl">
-            <span className="inline-flex rounded-full bg-white/10 px-4 py-2 text-xs uppercase tracking-[0.25em] text-slate-200">
+          <div className="card-dark">
+            <span className="inline-flex rounded-full bg-white/10 px-4 py-2 text-xs uppercase tracking-[0.25em] animate-text-shimmer">
               Snapshot Studio
             </span>
             <h1 className="mt-6 text-4xl font-semibold tracking-tight">Build a future-ready business snapshot</h1>
@@ -120,36 +121,36 @@ export default function CreateSnapshot() {
                 <p className="mt-2 text-lg font-semibold text-white">Track your decisions with context</p>
               </div>
               <div className="rounded-3xl bg-white/5 p-5 ring-1 ring-white/10">
-                <p className="text-sm uppercase tracking-[0.2em] text-slate-400">What you’ll get</p>
+                <p className="text-sm uppercase tracking-[0.2em] text-slate-400">What you'll get</p>
                 <p className="mt-2 text-lg font-semibold text-white">Historical view of your business priorities</p>
               </div>
             </div>
             <div className="mt-8 flex flex-col gap-3 text-sm text-slate-300">
               <div className="flex items-center gap-3">
-                <span className="h-2 w-2 rounded-full bg-secondary" />
+                <span className="h-2 w-2 rounded-full bg-secondary-500" />
                 <span>Preload all industry and region options.</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="h-2 w-2 rounded-full bg-secondary" />
+                <span className="h-2 w-2 rounded-full bg-secondary-500" />
                 <span>Submit quickly and revisit your snapshot later.</span>
               </div>
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-xl">
+          <div className="card">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h2 className="text-2xl font-semibold text-slate-900">Snapshot details</h2>
                 <p className="text-sm text-slate-500">Fill in the essentials to save your business profile.</p>
               </div>
-              <Link to="/dashboard" className="btn-outline inline-flex items-center justify-center">
+              <Link to="/dashboard" className="btn-outline">
                 Back to dashboard
               </Link>
             </div>
 
             {error && (
-              <div className="mt-6 rounded-3xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-                {error}
+              <div className="mt-6">
+                <ErrorMessage message={error} onDismiss={() => setError('')} />
               </div>
             )}
 
@@ -288,26 +289,26 @@ export default function CreateSnapshot() {
                 </label>
               </div>
 
-              <label className="flex items-center gap-3 rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-700">
+              <label className="flex items-center gap-3 rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-700 cursor-pointer hover:bg-slate-100 transition-colors">
                 <input
                   type="checkbox"
                   name="has_physical_location"
                   checked={formData.has_physical_location}
                   onChange={handleChange}
-                  className="h-5 w-5 rounded border-slate-300 text-primary focus:ring-primary"
+                  className="h-5 w-5 rounded border-slate-300 text-primary-500 focus:ring-primary-500"
                 />
                 <span>I have a physical business location</span>
               </label>
 
-              <button type="submit" disabled={saving} className="btn-primary inline-flex items-center justify-center">
+              <button type="submit" disabled={saving} className="btn-primary w-full">
                 {saving ? 'Saving snapshot…' : 'Create snapshot'}
               </button>
             </form>
           </div>
         </div>
 
-        <aside className="space-y-6 rounded-[2rem] border border-slate-200 bg-white p-8 shadow-xl">
-          <div className="rounded-3xl bg-gradient-to-br from-primary to-cyan-500 p-6 text-white shadow-inner">
+        <aside className="space-y-6 card">
+          <div className="rounded-3xl bg-gradient-to-br from-primary-500 to-cyan-500 p-6 text-white shadow-inner">
             <h2 className="text-xl font-semibold">Snapshot insight</h2>
             <p className="mt-3 text-sm leading-6 text-white/90">
               The more detail you provide, the richer the snapshot can become. This page captures your current business assumptions in a format that is ready for analysis.
