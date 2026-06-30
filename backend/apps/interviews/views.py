@@ -148,12 +148,11 @@ def complete_interview(request, session_id):
             status=status.HTTP_403_FORBIDDEN
         )
     
-    # Check if session is already completed
+    # Allow regeneration if session is already completed
+    # Reset session status to allow regeneration
     if session.status == InterviewSession.STATUS_COMPLETED:
-        return Response(
-            {'detail': 'Interview session is already completed.'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        session.status = InterviewSession.STATUS_IN_PROGRESS
+        session.save()
     
     # Get snapshot data
     snapshot = session.snapshot

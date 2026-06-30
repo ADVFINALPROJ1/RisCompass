@@ -11,19 +11,13 @@ from .models import InterviewSession
 @receiver(post_save, sender='snapshots.BusinessSnapshot')
 def create_interview_if_triggered(sender, instance, created, **kwargs):
     """
-    Automatically create an interview session when a business snapshot is created
-    and meets the trigger criteria.
-    
-    Trigger criteria are defined in should_trigger_interview():
-    - Region data availability is low or very_low
-    - Region type is rural or remote
-    - API data completeness is below 0.60
-    - Agriculture industry in remote regions
+    Automatically create an interview session for every business snapshot created.
+    This allows users to optionally complete interviews for any snapshot to enhance risk assessment.
     """
     if created:
         should_trigger, reason = should_trigger_interview(instance)
-        if should_trigger:
-            InterviewSession.objects.create(
-                snapshot=instance,
-                trigger_reason=reason
-            )
+        trigger_reason = reason if should_trigger else 'Optional interview for enhanced risk assessment'
+        InterviewSession.objects.create(
+            snapshot=instance,
+            trigger_reason=trigger_reason
+        )

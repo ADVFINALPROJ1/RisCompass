@@ -157,40 +157,51 @@ export default function SnapshotDetail() {
           {snapshot.interview_session ? (
             <div className="space-y-4">
               <div className="rounded-3xl border border-purple-200 bg-purple-50 p-6">
-                <h3 className="text-lg font-semibold text-purple-900">Interview Required</h3>
+                <h3 className="text-lg font-semibold text-purple-900">Interview</h3>
                 <p className="mt-2 text-sm text-purple-700">
-                  {snapshot.interview_session.trigger_reason || 'This region requires additional local insights for accurate risk assessment.'}
+                  {snapshot.interview_session.trigger_reason || 'Enhance your risk assessment with local insights.'}
                 </p>
-                <Link
-                  to={`/interviews/${snapshot.interview_session.id}`}
-                  className={`mt-4 inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition ${
-                    snapshot.interview_session.status === 'completed'
-                      ? 'bg-green-500 text-white hover:bg-green-600'
-                      : snapshot.interview_session.status === 'in_progress'
-                      ? 'bg-amber-500 text-white hover:bg-amber-600'
-                      : 'bg-purple-500 text-white hover:bg-purple-600'
-                  }`}
-                >
-                  {snapshot.interview_session.status === 'completed'
-                    ? 'View Interview Report'
-                    : snapshot.interview_session.status === 'in_progress'
-                    ? 'Continue Interview'
-                    : 'Start Interview'}
-                </Link>
+                {snapshot.interview_session.status === 'completed' ? (
+                  <div className="mt-4 space-y-3">
+                    <Link
+                      to={`/reports/${snapshot.interview_session.risk_report_id}`}
+                      className="inline-flex items-center justify-center rounded-full bg-green-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-green-600"
+                    >
+                      View Interview Report
+                    </Link>
+                    <Link
+                      to={`/interviews/${snapshot.interview_session.id}`}
+                      className="ml-3 inline-flex items-center justify-center rounded-full border border-purple-500 px-6 py-3 text-sm font-semibold text-purple-600 transition hover:bg-purple-50"
+                    >
+                      Edit & Regenerate
+                    </Link>
+                  </div>
+                ) : (
+                  <Link
+                    to={`/interviews/${snapshot.interview_session.id}`}
+                    className={`mt-4 inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition ${
+                      snapshot.interview_session.status === 'in_progress'
+                        ? 'bg-amber-500 text-white hover:bg-amber-600'
+                        : 'bg-purple-500 text-white hover:bg-purple-600'
+                    }`}
+                  >
+                    {snapshot.interview_session.status === 'in_progress'
+                      ? 'Continue Interview'
+                      : 'Start Interview'}
+                  </Link>
+                )}
               </div>
               
-              {snapshot.interview_session.status !== 'completed' && (
-                <div className="text-center">
-                  <p className="text-sm text-slate-500">Or generate a report based on available data:</p>
-                  <button
-                    onClick={handleGenerateReport}
-                    disabled={generating}
-                    className="mt-2 btn-secondary inline-flex items-center justify-center px-6 py-3"
-                  >
-                    {generating ? 'Generating Report...' : 'Generate Risk Report (Limited Data)'}
-                  </button>
-                </div>
-              )}
+              <div className="text-center">
+                <p className="text-sm text-slate-500">Or generate a report based on available data (World Bank):</p>
+                <button
+                  onClick={handleGenerateReport}
+                  disabled={generating}
+                  className="mt-2 btn-secondary inline-flex items-center justify-center px-6 py-3"
+                >
+                  {generating ? 'Generating Report...' : 'Generate Risk Report (Limited Data)'}
+                </button>
+              </div>
             </div>
           ) : (
             <button
