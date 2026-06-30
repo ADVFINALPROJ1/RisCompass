@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { Link } from 'react-router-dom'
 import snapshotsApi from '../api/snapshotsApi'
 import comparisonsApi from '../api/comparisonsApi'
 import reportsApi from '../api/reportsApi'
 import LoadingSpinner from '../components/LoadingSpinner'
+import ErrorMessage from '../components/ErrorMessage'
+import EmptyState from '../components/EmptyState'
 
 const FILTER_FOCUS_OPTIONS = [
   { value: 'overall', label: 'Overall' },
@@ -130,8 +133,11 @@ export default function ComparePage() {
   if (error) {
     return (
       <div className="section">
-        <div className="rounded-3xl border border-red-200 bg-red-50 p-5 text-sm text-red-700">
-          {error}
+        <ErrorMessage message={error} />
+        <div className="mt-6">
+          <Link to="/dashboard" className="btn-primary">
+            Back to Dashboard
+          </Link>
         </div>
       </div>
     )
@@ -142,29 +148,28 @@ export default function ComparePage() {
   if (snapshotsWithReports.length < 2) {
     return (
       <div className="section">
-        <div className="rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-600">
-          <p className="text-lg font-semibold text-slate-900">Need at least 2 snapshots with risk reports</p>
-          <p className="mt-2">You have {snapshots.length} snapshot(s), but only {snapshotsWithReports.length} have risk reports. Generate risk reports for at least 2 snapshots to compare them.</p>
-          <Link to="/dashboard" className="btn-primary mt-4 inline-flex items-center justify-center">
-            Go to Dashboard
-          </Link>
-        </div>
+        <EmptyState
+          title="Need at least 2 snapshots with risk reports"
+          description={`You have ${snapshots.length} snapshot${snapshots.length !== 1 ? 's' : ''}, but only ${snapshotsWithReports.length} have risk reports. Generate risk reports for at least 2 snapshots to compare them.`}
+          actionText="Go to Dashboard"
+          actionLink="/dashboard"
+        />
       </div>
     )
   }
 
   return (
-    <div className="section">
+    <div className="section animate-fade-in">
       <div className="mb-8">
-        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">Compare</p>
-        <h1 className="mt-3 text-4xl font-semibold text-slate-950">Compare Snapshots</h1>
-        <p className="mt-2 max-w-2xl text-sm text-slate-600">
+        <p className="text-sm font-semibold uppercase tracking-[0.24em] animate-text-shimmer">Compare</p>
+        <h1 className="mt-3 page-title">Compare Snapshots</h1>
+        <p className="page-subtitle">
           Compare two of your business snapshots to see which has lower risk based on different categories.
         </p>
       </div>
 
       <div className="grid gap-8 lg:grid-cols-2">
-        <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-xl">
+        <div className="card">
           <h2 className="text-2xl font-semibold text-slate-950">Select Snapshots</h2>
           <p className="mt-1 text-sm text-slate-500">Choose two snapshots to compare their risk profiles.</p>
 
@@ -177,7 +182,7 @@ export default function ComparePage() {
                 id="snapshotA"
                 value={snapshotA}
                 onChange={(e) => setSnapshotA(e.target.value)}
-                className="mt-2 block w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                className="mt-2 block w-full input-field"
                 required
               >
                 <option value="">Select first snapshot</option>
@@ -205,7 +210,7 @@ export default function ComparePage() {
                 id="snapshotB"
                 value={snapshotB}
                 onChange={(e) => setSnapshotB(e.target.value)}
-                className="mt-2 block w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                className="mt-2 block w-full input-field"
                 required
               >
                 <option value="">Select second snapshot</option>
@@ -233,7 +238,7 @@ export default function ComparePage() {
                 id="filterFocus"
                 value={filterFocus}
                 onChange={(e) => setFilterFocus(e.target.value)}
-                className="mt-2 block w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                className="mt-2 block w-full input-field"
               >
                 {FILTER_FOCUS_OPTIONS.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -244,22 +249,20 @@ export default function ComparePage() {
             </div>
 
             {comparisonError && (
-              <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-                {comparisonError}
-              </div>
+              <ErrorMessage message={comparisonError} onDismiss={() => setComparisonError('')} />
             )}
 
             <button
               type="submit"
               disabled={comparing}
-              className="btn-primary w-full rounded-2xl px-6 py-3 font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-primary w-full"
             >
               {comparing ? 'Comparing...' : 'Compare Snapshots'}
             </button>
           </form>
         </div>
 
-        <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-xl">
+        <div className="card">
           <h2 className="text-2xl font-semibold text-slate-950">Comparison Results</h2>
           <p className="mt-1 text-sm text-slate-500">View the comparison results here.</p>
 
@@ -269,7 +272,7 @@ export default function ComparePage() {
             </div>
           ) : comparisonResult ? (
             <div className="mt-6 space-y-6">
-              <div className="rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 p-6 text-white">
+              <div className="card-dark">
                 <h3 className="text-lg font-semibold">Winner</h3>
                 <p className="mt-2 text-3xl font-bold">
                   {comparisonResult.winner_snapshot_title || 'Tie'}
@@ -316,27 +319,32 @@ export default function ComparePage() {
 
               <button
                 onClick={handleReset}
-                className="btn-secondary w-full rounded-2xl px-6 py-3 font-semibold"
+                className="btn-secondary w-full"
               >
                 Compare Different Snapshots
               </button>
             </div>
           ) : (
-            <div className="mt-6 flex flex-col items-center justify-center py-12 text-center text-slate-400">
-              <svg
-                className="h-16 w-16"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                />
-              </svg>
-              <p className="mt-4 text-sm">Select snapshots and click compare to see results</p>
+            <div className="mt-6">
+              <EmptyState
+                icon={
+                  <svg
+                    className="h-16 w-16 text-slate-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                    />
+                  </svg>
+                }
+                title="No comparison yet"
+                description="Select snapshots and click compare to see results"
+              />
             </div>
           )}
         </div>
